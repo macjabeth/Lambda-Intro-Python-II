@@ -1,95 +1,62 @@
-from room import Room
-from player import Player
+import re
+from colorama import init
+from command import Command
+from player import *
+from room import rooms, valid_movements
 
-# Declare all the rooms
+# initialise coloured output
+init()
 
-room = {
-    'outside':  Room("Outside Cave Entrance", "North of you, the cave mount beckons"),
+# make a new player object that is currently in the 'outside' room.
 
-    'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty passages run north and east."""),
+print('-' * 80)
 
-    'overlook': Room("Grand Overlook", """A steep cliff appears before you, falling into the darkness. Ahead to the north, a light flickers in the distance, but there is no way across the chasm."""),
+player_name = None
+while not player_name:
+    player_name = str(input('Greetings adventurer! What is your name? '))
 
-    'narrow':   Room("Narrow Passage", """The narrow passage bends here from west to north. The smell of gold permeates the air."""),
+print(f'Welcome, {player_name}! May the odds be ever in your favour...')
+print('-' * 80)
 
-    'treasure': Room("Treasure Chamber", """You've found the long-lost treasure chamber! Sadly, it has already been completely emptied by earlier adventurers. The only exit is to the south."""),
-}
+player = Player(
+    name=player_name,
+    room=rooms['outside'],
+    health=100, max_health=100
+)
 
-
-# Link rooms together
-
-room['outside'].n = room['foyer']
-room['foyer'].s = room['outside']
-room['foyer'].n = room['overlook']
-room['foyer'].e = room['narrow']
-room['overlook'].s = room['foyer']
-room['narrow'].w = room['foyer']
-room['narrow'].n = room['treasure']
-room['treasure'].s = room['narrow']
-
-# room direction map
-
-room_exit_key = {
-    'n': 'north',
-    's': 'south',
-    'e': 'east',
-    'w': 'west'
-}
-
-movement_map = {
-    'n': 'n',
-    'north': 'n',
-    's': 's',
-    'south': 's',
-    'e': 'e',
-    'east': 'e',
-    'w': 'w',
-    'west': 'w'
-}
+# display initial room
+player.current_room.display()
 
 #
-# Main
+# main loop
 #
 
-# Make a new player object that is currently in the 'outside' room.
-player = Player('Zycandos', room['outside'])
 
-# Write a loop that:
-#
-# * Prints the current room name
-# * Prints the current description (the textwrap module might be useful here).
-# * Waits for user input and decides what to do.
-#
-# If the user enters a cardinal direction, attempt to move to the room there.
-# Print an error message if the movement isn't allowed.
-#
-# If the user enters "q", quit the game.
+def main():
+    while True:
+        cmd = str(input(f'{player.health}/{player.max_health}h > '))
 
-while True:
-    # display room name and description
-    print(player.current_room.name)
-    print(player.current_room.description)
+        if not cmd:
+            continue
 
-    # display possible exits
-    exits = []
-    for key in vars(player.current_room).keys():
-        xdir = room_exit_key.get(key)
-        if xdir: exits.append(xdir)
+        m = re.match(r'^(\S+)(?: (.+))?$', cmd.lower())
+        verb, args = m.group(1, 2)
 
-    if len(exits) == 1:
-        print(f'You see a single exit leading {exits[0]}.')
-    elif len(exits) > 1:
-        print(f"You see exits leading {', '.join(exits[:-1])} and {exits[-1]}")
-    else:
-        print('You see no exit.')
+        if verb in ('q', 'quit'):
+            print('You kneel and pray for salvation...')
+            # I'd like to put this on a timer...
+            print('\nThe gods answer your prayer and your soul is lifted to the heavens.')
+            break
+        elif verb in valid_movements:
+            player.move(verb)
+        else:
+            method = Command.parse(verb)
+
+            if method:
+                method(persona=player, next=args)
+            else:
+                print('Huh?')
 
 
-    cmd = input('> ')
-
-    current_room = vars(player.current_room)
-    valid_move = movement_map[cmd]
-
-    if cmd == 'q':
-        break
-    elif valid_move and current_room[valid_move]:
-        player.current_room = current_room[valid_move]
+if __name__ == "__main__":
+    main()
