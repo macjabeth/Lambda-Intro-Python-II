@@ -37,8 +37,7 @@ class Room():
         if len(exits) == 1:
             print(f'You see a single exit leading {exits[0]}.')
         elif len(exits) > 1:
-            print(
-                f"You see exits leading {', '.join(exits[:-1])} and {exits[-1]}")
+            print(f'You see exits leading {", ".join(exits[:-1])} and {exits[-1]}.')
         else:
             print('You see no exit.')
 
