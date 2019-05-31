@@ -2,7 +2,7 @@
 # description attributes.
 
 from colorama import Fore
-from item import Item
+from replica import *
 
 
 class Room():
@@ -50,7 +50,7 @@ class Room():
         return exits
 
     def find_item(self, thing):
-        return Item.contains(self.items, thing)
+        return Object.contains(self.items, thing)
 
     def list_items(self):
         for item in self.items:
@@ -103,7 +103,24 @@ Room(
 Room(
     replica='treasure',
     name='Treasure Chamber',
-    description='''You've found the long-lost treasure chamber! Sadly, it has already been completely emptied by earlier adventurers.'''
+    description='''You've found the long-lost treasure chamber!''',
+    items=[
+        Item(
+            replica='chest',
+            name='a gold-encrusted chest',
+            description='''It is locked shut.''',
+            room_desc='''A large gold-encrusted chest rests in the center of the room.''',
+            weight='huge',
+            aliases=('trunk',)
+        ),
+        CCC(
+            replica='fukumoto',
+            name='Brady Fukumoto',
+            description='''The renowned Computer Science teacher stands before you.''',
+            room_desc='''Brady Fukumoto stands here looking rather perturbed.''',
+            aliases=('brady',)
+        )
+    ]
 )
 
 # Link rooms together

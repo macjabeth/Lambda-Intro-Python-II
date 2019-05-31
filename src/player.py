@@ -2,7 +2,7 @@
 # currently.
 
 from room import move_to_long
-from item import Item
+from replica import Object
 
 class CharacterStats():
     def __init__(self, args):
@@ -28,7 +28,7 @@ class Player(CharacterStats):
     def find_item(self, thing):
         # last word is most likely the item we need
         # this way we handle cases like `get silver knife`
-        return Item.contains(self.inventory, thing)
+        return Object.contains(self.inventory, thing)
 
     def add_item(self, item):
         self.inventory.append(item)
