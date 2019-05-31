@@ -1,14 +1,16 @@
 import itertools
 
-class Item():
+
+class Object():
     new_id = itertools.count().__next__
 
     def __init__(self, **args):
-        self.id = Item.new_id()
+        self.id = Object.new_id()
         self.replica = args['replica']
         self.name = args['name']
         self.description = args['description']
         self.room_desc = args['room_desc']
+        self.weight = args.get('weight')
         self.keywords = (self.replica, *args['aliases'])
 
     @staticmethod
@@ -19,3 +21,15 @@ class Item():
         for item in items:
             if thing in item.keywords:
                 return item
+
+
+class Item(Object):
+    def __init__(self, **args):
+        super().__init__(**args)
+        self.type = 'item'
+
+
+class CCC(Object):
+    def __init__(self, **args):
+        super().__init__(**args)
+        self.type = 'ccc'
