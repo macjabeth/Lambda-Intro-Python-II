@@ -84,8 +84,30 @@ def inventory(**args):
                 print(item.name)
 
 
+def stab(**args):
+    persona = args['persona']
+    target = args.get('next')
+    weapon = persona.find_item('knife')
+
+    if not weapon:
+        print('What do you hope to stab with?')
+    elif not target:
+        print("You stab a nearby pillar in frustration.")
+    else:
+        target = persona.current_room.find_item(target)
+        if target:
+            if target.type == 'ccc':
+                print(f'You plunge {weapon.name} into {target.name}, ending the life that once was.')
+                target.room_desc = f'''{target.name} lies here in a pool of blood.'''
+            else:
+                print(f'You stab {target.name} in frustration.')
+        else:
+            print(f'Are you blind? I see no "{target}" here.')
+
+
 Command(cmds=('look', 'l'), method=look)
 Command(cmds=('examine', 'ex'), method=examine)
 Command(cmds=('get', 'take'), method=get)
 Command(cmds=('drop',), method=drop)
 Command(cmds=('inventory', 'inv'), method=inventory)
+Command(cmds=('stab', 'jab'), method=stab)
