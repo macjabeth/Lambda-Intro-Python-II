@@ -45,9 +45,14 @@ def get(**args):
         persona = args['persona']
         item = persona.current_room.find_item(target)
         if item:
-            persona.current_room.remove_item(item)
-            persona.add_item(item)
-            print(f'You pick up {item.name}.')
+            if item.type == 'ccc':
+                print("It wouldn't be very polite to pick someone up like that.")
+            elif item.weight == 'huge':
+                print(f"Try as you might, you are unable to budge {item.name}")
+            else:
+                persona.current_room.remove_item(item)
+                persona.add_item(item)
+                print(f'You pick up {item.name}.')
         else:
             print(f'Are you blind? I see no "{target}" here.')
 

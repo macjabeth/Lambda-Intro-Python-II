@@ -117,7 +117,7 @@ Room(
             replica='fukumoto',
             name='Brady Fukumoto',
             description='''The renowned Computer Science teacher stands before you.''',
-            room_desc='''Brady Fukumoto stands here looking rather perturbed.''',
+            room_desc='''Brady Fukumoto stands nearby looking rather perturbed.''',
             aliases=('brady',)
         )
     ]
