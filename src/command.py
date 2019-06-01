@@ -37,6 +37,29 @@ def examine(**args):
             print(f'There is no "{target}" for you to examine.')
 
 
+def say(**args):
+    target = args.get('next')
+    if not target:
+        print('You start to say something, but... think better of it and stop yourself.')
+    else:
+        persona = args['persona']
+
+        # grammar is important
+        if target[-1] not in ['.', '!', '?']: target += '.'
+
+        # are we saying something to someone or something directly?
+        if target.startswith('to '):
+            m = re.match(r'^to (\S+) (.+)', target)
+            replica = m.group(1)
+            if replica:
+                replica = persona.current_room.find_item(replica) or persona.find_item(replica)
+                if replica:
+                    print(f'You say to {replica.name}, "{m.group(2).capitalize()}"')
+                    return
+
+        print(f'You say, "{target.capitalize()}"')
+
+
 def get(**args):
     target = args.get('next')
     if not target:
@@ -107,6 +130,7 @@ def stab(**args):
 
 Command(cmds=('look', 'l'), method=look)
 Command(cmds=('examine', 'ex'), method=examine)
+Command(cmds=('say', 'speak'), method=say)
 Command(cmds=('get', 'take'), method=get)
 Command(cmds=('drop',), method=drop)
 Command(cmds=('inventory', 'inv'), method=inventory)
