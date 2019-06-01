@@ -2,7 +2,7 @@ import re
 from colorama import init
 from command import Command
 from player import *
-from room import rooms, valid_movements
+from room import *
 
 # initialise coloured output
 init()
@@ -20,7 +20,7 @@ print('-' * 80)
 
 player = Player(
     name=player_name,
-    room=rooms['outside'],
+    room=Room.instances['outside'],
     health=100, max_health=100
 )
 
@@ -48,7 +48,7 @@ def main():
             print('\nThe gods answer your prayer and your soul is lifted to the heavens.')
             break
         elif verb in valid_movements:
-            player.move(verb)
+            player.move(move_to_short.get(verb) or verb)
         else:
             method = Command.parse(verb)
 

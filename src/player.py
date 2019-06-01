@@ -1,7 +1,7 @@
 # Write a class to hold player information, e.g. what room they are in
 # currently.
 
-from room import move_to_long
+from room import Room, move_to_long
 from replica import Object
 
 class CharacterStats():
@@ -17,9 +17,9 @@ class Player(CharacterStats):
         self.inventory = args.get('inventory') or []
 
     def move(self, direction):
-        room = vars(self.current_room)
-        if direction in room:
-            self.current_room = room[direction]
+        exits = vars(self.current_room).get('exits')
+        if exits and direction in exits:
+            self.current_room = Room.instances[exits[direction]]
             print(f'You move {move_to_long[direction]}')
             self.current_room.display()
         else:

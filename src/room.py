@@ -13,6 +13,7 @@ class Room():
         self.name = args['name']
         self.description = args['description']
         self.items = args.get('items') or []
+        self.exits = args.get('exits') or {}
         Room.instances[self.replica] = self
 
     def display(self,):
@@ -42,12 +43,7 @@ class Room():
             print('You see no exit.')
 
     def get_exits(self):
-        exits = []
-        for key in vars(self):
-            xdir = move_to_long.get(key)
-            if xdir:
-                exits.append(xdir)
-        return exits
+        return [move_to_long[x] for x in self.exits.keys()]
 
     def find_item(self, thing):
         return Object.contains(self.items, thing)
@@ -71,6 +67,7 @@ Room(
     replica='outside',
     name='Outside Cave Entrance',
     description='''Ahead of you, the cave mount beckons.''',
+    exits={ 'n': 'foyer' },
     items=[
         Item(
             replica='knife',
@@ -85,25 +82,29 @@ Room(
 Room(
     replica='foyer',
     name='Foyer',
-    description='''Dim light filters in from the exits. Dusty passages surround you.'''
+    description='''Dim light filters in from the exits. Dusty passages surround you.''',
+    exits = { 's': 'outside', 'n': 'overlook', 'e': 'narrow' }
 )
 
 Room(
     replica='overlook',
     name='Grand Overlook',
-    description='''A steep cliff appears before you, falling into the darkness. Ahead in the distance, a light flickers invitingly, but there is no way across the chasm.'''
+    description='''A steep cliff appears before you, falling into the darkness. Ahead in the distance, a light flickers invitingly, but there is no way across the chasm.''',
+    exits = { 's': 'foyer' }
 )
 
 Room(
     replica='narrow',
     name='Narrow Passage',
-    description='''The narrow passage bends here from corner to corner. The smell of gold permeates the air.'''
+    description='''The narrow passage bends here from corner to corner. The smell of gold permeates the air.''',
+    exits = { 'w': 'foyer', 'n': 'treasure' }
 )
 
 Room(
     replica='treasure',
     name='Treasure Chamber',
     description='''You've found the long-lost treasure chamber!''',
+    exits={ 's': 'narrow' },
     items=[
         Item(
             replica='chest',
@@ -123,30 +124,20 @@ Room(
     ]
 )
 
-# Link rooms together
-
-rooms = Room.instances
-
-rooms['outside'].n = rooms['foyer']
-
-rooms['foyer'].s = rooms['outside']
-rooms['foyer'].n = rooms['overlook']
-rooms['foyer'].e = rooms['narrow']
-
-rooms['overlook'].s = rooms['foyer']
-
-rooms['narrow'].w = rooms['foyer']
-rooms['narrow'].n = rooms['treasure']
-
-rooms['treasure'].s = rooms['narrow']
-
 # room directional mappings
 
-valid_movements = ('n', 's', 'e', 'w')
+valid_movements = ('n', 'north', 's', 'south', 'e', 'east', 'w', 'west')
 
 move_to_long = {
     'n': 'north',
     's': 'south',
     'e': 'east',
     'w': 'west'
+}
+
+move_to_short = {
+    'north': 'n',
+    'south': 's',
+    'east': 'e',
+    'west': 'w',
 }
