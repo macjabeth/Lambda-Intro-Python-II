@@ -5,11 +5,10 @@ class Command():
     instances = {}
 
     def __init__(self, **args):
-        method = args['method']
+        self.method = args['method']
         for cmd in args['cmds']:
             self.cmd = cmd
-            self.method = method
-            Command.instances[cmd] = method
+            Command.instances[cmd] = self.method
 
     @staticmethod
     def parse(verb):
@@ -53,9 +52,8 @@ def say(**args):
             replica = m.group(1)
             if replica:
                 replica = persona.current_room.find_item(replica) or persona.find_item(replica)
-                if replica:
-                    print(f'You say to {replica.name}, "{m.group(2).capitalize()}"')
-                    return
+                print(f'You say to {replica.name}, "{m.group(2).capitalize()}"')
+                return
 
         print(f'You say, "{target.capitalize()}"')
 
